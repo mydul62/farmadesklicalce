@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PharmaDesk — Developer Master Key Generator</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              900: '#064e3b',
+              950: '#022c22',
+            }
+          },
+          animation: {
+            'glow-pulse': 'glow 3s infinite ease-in-out',
+            'float': 'float 6s infinite ease-in-out',
+            'scale-in': 'scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          },
+          keyframes: {
+            glow: {
+              '0%, 100%': { opacity: 0.4, transform: 'scale(1)' },
+              '50%': { opacity: 0.7, transform: 'scale(1.03)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            scaleIn: {
+              '0%': { opacity: 0, transform: 'scale(0.96) translateY(8px)' },
+              '100%': { opacity: 1, transform: 'scale(1) translateY(0)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070a12;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    
+    /* Subtle background grid pattern */
+    .bg-grid-pattern {
+      background-size: 36px 36px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+
+    /* Glassmorphism effects */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .glass-input {
+      background: rgba(2, 6, 23, 0.8);
+      border: 1px solid rgba(51, 65, 85, 0.7);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15), 0 0 20px rgba(16, 185, 129, 0.1);
+    }
+
+    /* Custom Toast Notifications */
+    #toastContainer {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-20px) scale(0.9); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative bg-grid-pattern selection:bg-emerald-500 selection:text-black">
+
+  <!-- Ambient Glowing Orbs Background -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-emerald-600/20 rounded-full blur-[120px] animate-glow-pulse"></div>
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-amber-500/15 rounded-full blur-[120px] animate-glow-pulse" style="animation-delay: 1.5s;"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[150px]"></div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer"></div>
+
+  <!-- Main Generator Card -->
+  <div class="w-full max-w-lg glass-card rounded-3xl p-6 sm:p-8 space-y-6 relative z-10 animate-scale-in">
+    
+    <!-- Top Decorative Line -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/60 to-transparent"></div>
+
+    <!-- Header Section -->
+    <div class="flex items-center justify-between border-b border-slate-800/80 pb-5">
+      <div class="flex items-center gap-3.5">
+        <!-- Shield Icon with Cyber Ring -->
+        <div class="relative flex items-center justify-center">
+          <div class="absolute inset-0 bg-emerald-500/20 rounded-2xl blur-sm animate-pulse"></div>
+          <div class="w-13 h-13 w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-slate-900 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-inner relative">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-extrabold tracking-wider text-slate-100 uppercase">PHARMADESK</h1>
+            <span class="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full tracking-widest uppercase">v2.0</span>
+          </div>
+          <p class="text-xs text-emerald-400/90 font-semibold tracking-wide mt-0.5">Developer Master Key Generator</p>
+        </div>
+      </div>
+      
+      <!-- System Status Badge -->
+      <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/80 border border-slate-800 text-[11px] text-slate-400 font-medium">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="w-2 h-2 rounded-full bg-emerald-400 -ml-3.5"></span>
+        <span>Offline Secure</span>
+      </div>
+    </div>
+
+    <!-- Form Inputs -->
+    <div class="space-y-5">
+      <!-- Machine ID Input -->
+      <div>
+        <div class="flex justify-between items-center mb-1.5">
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+            Client Machine ID <span class="text-emerald-400">*</span>
+          </label>
+          <button type="button" onclick="insertSampleId()" class="text-[11px] text-slate-400 hover:text-emerald-400 transition-colors font-medium flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            Sample ID
+          </button>
+        </div>
+        <div class="relative">
+          <input
+            id="machineIdInput"
+            type="text"
+            placeholder="e.g. PD-88F4-99X2"
+            class="w-full glass-input text-emerald-300 font-mono font-bold text-base px-4 py-3.5 rounded-2xl focus:outline-none uppercase tracking-widest placeholder:text-slate-600 placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:font-normal"
+          />
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            <button type="button" onclick="clearInput('machineIdInput')" class="p-1 text-slate-500 hover:text-slate-300 transition-colors rounded-lg">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-1.5 flex items-center gap-1">
+          <svg class="w-3.5 h-3.5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Paste the Machine ID sent by your client on WhatsApp/SMS
+        </p>
+      </div>
+
+      <!-- Pharmacy Store Name Input -->
+      <div>
+        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+          Client Pharmacy Store Name <span class="text-slate-500 text-[10px] font-normal">(Optional)</span>
+        </label>
+        <input
+          id="storeNameInput"
+          type="text"
+          placeholder="e.g. ABC Pharmacy"
+          class="w-full glass-input text-slate-100 font-sans text-sm px-4 py-3 rounded-2xl focus:outline-none placeholder:text-slate-600"
+        />
+      </div>
+
+      <!-- Generate Button -->
+      <button
+        onclick="generateKey()"
+        class="group relative w-full py-4 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-extrabold rounded-2xl text-sm transition-all duration-200 shadow-lg shadow-emerald-950/80 active:scale-[0.98] flex items-center justify-center gap-2 overflow-hidden"
+      >
+        <!-- Shimmer overlay on hover -->
+        <div class="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-out"></div>
+        
+        <svg class="w-5 h-5 text-emerald-100 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+        <span class="tracking-wide text-base">Generate License Key</span>
+      </button>
+    </div>
+
+    <!-- Output Section -->
+    <div id="outputSection" class="hidden space-y-4 pt-5 border-t border-slate-800/80">
+      <div>
+        <label class="block text-xs font-bold text-amber-400/90 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Generated License Key (16-Digit Serial)
+        </label>
+        <div class="flex flex-col sm:flex-row items-stretch gap-2.5">
+          <div class="relative flex-1">
+            <input
+              id="resultKeyInput"
+              readonly
+              class="w-full bg-slate-950/90 text-amber-400 font-mono font-extrabold text-xl px-4 py-3.5 rounded-2xl border border-amber-500/40 text-center tracking-widest select-all shadow-inner focus:outline-none"
+            />
+          </div>
+          <button
+            onclick="copyKey()"
+            class="px-5 py-3.5 bg-amber-500/15 hover:bg-amber-500/25 active:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-bold rounded-2xl text-xs transition-all shrink-0 flex items-center justify-center gap-2 shadow-sm"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+            <span>Copy Key</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- WhatsApp Button -->
+      <button
+        onclick="copyWhatsAppMsg()"
+        class="w-full py-3.5 bg-slate-800/90 hover:bg-slate-700/90 active:bg-slate-800 text-slate-100 font-semibold rounded-2xl text-xs transition-all flex items-center justify-center gap-2.5 border border-slate-700/70 shadow-md group"
+      >
+        <div class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.572-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+          </svg>
+        </div>
+        <span class="tracking-wide">Copy Full WhatsApp Message for Client</span>
+      </button>
+    </div>
+
+    <!-- Developer Footer Info -->
+    <div class="pt-2 border-t border-slate-800/40 text-center space-y-1">
+      <div class="text-[11px] text-slate-400 font-medium">
+        PharmaDesk Vendor Security System • Keep this file private on your phone or laptop.
+      </div>
+      <div class="text-[10px] text-slate-500 font-mono">
+        Developer: <span class="text-slate-400">Md Mydul Islam Mahim</span> • WhatsApp: <span class="text-slate-400">01569148920</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const MASTER_SECRET_SALT = 'PHARMADESK_SECRET_KEY_2026_MASTER_OFFLINE';
+
+    // Pure JS HMAC-SHA256 Implementation for Offline Web Browsers
+    async function sha256(str) {
+      const buf = new TextEncoder().encode(str);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    }
+
+    async function hmacSha256(keyStr, messageStr) {
+      const enc = new TextEncoder();
+      const keyData = enc.encode(keyStr);
+      const msgData = enc.encode(messageStr);
+
+      const cryptoKey = await crypto.subtle.importKey(
+        'raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+      );
+      const signature = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
+      return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    }
+
+    async function generateKey() {
+      const input = document.getElementById('machineIdInput').value.trim().toUpperCase();
+      if (!input) {
+        showToast('Please enter a Machine ID (e.g. PD-88F4-99X2)', 'error');
+        alert('Please enter a Machine ID (e.g. PD-88F4-99X2)');
+        return;
+      }
+
+      const hmac = await hmacSha256(MASTER_SECRET_SALT, input);
+      const k1 = hmac.slice(0, 4);
+      const k2 = hmac.slice(4, 8);
+      const k3 = hmac.slice(8, 12);
+      const k4 = hmac.slice(12, 16);
+
+      const serialKey = `${k1}-${k2}-${k3}-${k4}`;
+
+      document.getElementById('resultKeyInput').value = serialKey;
+      const outputSection = document.getElementById('outputSection');
+      outputSection.classList.remove('hidden');
+      
+      showToast('License key generated successfully!', 'success');
+    }
+
+    function copyKey() {
+      const input = document.getElementById('resultKeyInput');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      showToast('License Key copied to clipboard!', 'success');
+      alert('License Key copied to clipboard!');
+    }
+
+    function copyWhatsAppMsg() {
+      const key = document.getElementById('resultKeyInput').value;
+      const mId = document.getElementById('machineIdInput').value.trim().toUpperCase();
+      const store = document.getElementById('storeNameInput').value.trim() || 'Pharmacy Store';
+
+      const msg = `Dear ${store},\n\nYour PharmaDesk License Key has been generated successfully!\n\n🔑 License Key: ${key}\n💻 Machine ID: ${mId}\n\nPlease paste this Key in your PharmaDesk app activation window to unlock your software permanently.\n\nDeveloper: Md Mydul Islam Mahim\nWhatsApp: 01569148920\nThank you for choosing PharmaDesk!`;
+
+      navigator.clipboard.writeText(msg);
+      showToast('WhatsApp message copied to clipboard!', 'success');
+      alert('WhatsApp message copied to clipboard!');
+    }
+
+    // Helper functions for UI enhancements
+    function insertSampleId() {
+      const sampleIds = ['PD-88F4-99X2', 'PD-77A1-33B9', 'PD-12E9-44F8', 'PD-99X0-88Z3'];
+      const randomId = sampleIds[Math.floor(Math.random() * sampleIds.length)];
+      document.getElementById('machineIdInput').value = randomId;
+      showToast(`Sample Machine ID inserted: ${randomId}`, 'info');
+    }
+
+    function clearInput(id) {
+      document.getElementById(id).value = '';
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      
+      const colors = {
+        success: 'bg-emerald-950/90 border-emerald-500/50 text-emerald-300',
+        error: 'bg-rose-950/90 border-rose-500/50 text-rose-300',
+        info: 'bg-slate-900/95 border-slate-700 text-slate-200'
+      };
+
+      const icons = {
+        success: `<svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`,
+        error: `<svg class="w-4 h-4 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+        info: `<svg class="w-4 h-4 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`
+      };
+
+      toast.className = `toast px-4 py-3 rounded-2xl border shadow-2xl backdrop-blur-md text-xs font-semibold flex items-center gap-2.5 max-w-sm ${colors[type] || colors.info}`;
+      toast.innerHTML = `${icons[type] || icons.info}<span>${message}</span>`;
+      
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px) scale(0.95)';
+        toast.style.transition = 'all 0.25s ease-out';
+        setTimeout(() => toast.remove(), 250);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
